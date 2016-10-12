@@ -586,6 +586,12 @@ cd Dev/ParaView-4.2.0-Linux-64bit/bin
 
 ![image19](../../../../../images/diffusion/image19.png)
 
+![image20](../../../../../images/diffusion/image20.png)
+
+![image21](../../../../../images/diffusion/image21.png)
+
+![image22](../../../../../images/diffusion/image22.png)
+
 
 Tutorials/BiventriclesFitting [lien](http://www.continuity.ucsd.edu/Continuity/Documentation/Tutorials/BiventriclesFitting)
 
