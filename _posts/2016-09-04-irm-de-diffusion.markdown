@@ -547,8 +547,6 @@ Z_base
 
 Il existe plusieurs méthodes pour analyser la microstructure cardiaque. Une des plus courante consiste à projeter les vecteurs propres issus du tenseur de diffusion dans un repère cylindrique puis à calculer l'angle entre la projection du vecteur et les vecteurs directeurs de ce repère. Par exemple l'angle hélix est l'angle entre la projection du premier vecteur propre et l'axe z du repère cylindrique (qui correspond à l'axe principale du coeur). La structure du myocarde est très couramment décrite en utilisant cet angle, en effet en parcourant le myocarde de l'epicarde à l'endocarde, on observe une rotation de l'angle hélix de 120° environ.
 
-
-
 {% highlight ruby %}
 #launch the software with 3 as final argument to calculate the helix angle
 ./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 3
@@ -556,7 +554,21 @@ Il existe plusieurs méthodes pour analyser la microstructure cardiaque. Une des
 
 
 
-##### c) Affichage des résultats dans Volview
+### 4) Réalisation des figures <a id="segmentation"></a>
+
+
+#### 4.1) Les images de magnitudes  <a id="segmentation"></a>
+
+Uiliser le répertoire createMultiExectuble, puis ajouter DTFullBeta0_3 a celui ci avec la librairie et
+Faire un second executable vtk qui lit l'image de magnitude et qui imprime les images en short axis en png , utiliser un commande bash pour créer le git et compresser le tout.
+
+
+#### 4.2) L'orientation des fibres  <a id="segmentation"></a>
+
+#### 4.3) Superposition   <a id="segmentation"></a>
+
+
+##### a) Affichage des résultats dans Volview
 
 ![image12](../../../../../images/diffusion/image12.png)
 
