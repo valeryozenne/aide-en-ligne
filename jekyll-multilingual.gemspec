@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name     = 'jekyll-multilingual'
+  s.name     = 'aide-en-ligne'
   s.version  = '3.1.6'
   s.license  = 'MIT'
   s.summary  = 'Multilingual version of the Jekyll default theme'
