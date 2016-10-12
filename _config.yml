@@ -11,10 +11,10 @@ title:
   fr: Aide en ligne, institut de rythmologie cardiaque
 email: valery@aol.com
 description:
-  en: Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-  fr: Écrivez une super description de votre nouveau site ici. Vous pouvez modifier cette ligne dans _config.yml. Elle apparaîtra dans la balise meta description (pour les résultats sur Google) et dans le fil RSS feed.xml.
+  en: Liryc is a research, treatment, innovation and teaching institute, wholly dedicated to the study, diagnosis and treatment of cardiac electrical disorders.
+  fr: Liryc est un Institut Hospitalo-Universitaire (IHU) de recherche, de soin, d’innovation et d’enseignement, au service du patient.
 index:
-  en: 
+  en:
   fr: accueil.html
 feed:
   en: /feed.xml
