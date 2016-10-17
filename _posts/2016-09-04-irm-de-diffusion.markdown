@@ -605,6 +605,8 @@ cd Dev/ParaView-4.2.0-Linux-64bit/bin
 ![image22](../../../../../images/diffusion/image22.png)
 
 
+![animation1](../../../../../images/diffusion/animation1.gif)
+
 Tutorials/BiventriclesFitting [lien](http://www.continuity.ucsd.edu/Continuity/Documentation/Tutorials/BiventriclesFitting)
 
 ##### e) Segmentation plus fine du coeur sur ITK-SNAP
