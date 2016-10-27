@@ -1,13 +1,10 @@
 ---
 layout: post
-title:  "Acquisition comprimee !"
+title:  "Acquisition comprimée"
 ref: acquisition
 date:   2016-10-25 09:48:44 +0100
 categories: jekyll update
 lang: fr
-
-
-
 ---
 
 
@@ -24,11 +21,13 @@ Le but de la régularisation est d'imposer une solution unique à un problème m
 
 ### La norme l1
 
-$$ a^2 + b^2 = c^2 $$
+$$a^2 + b^2 = c^2$$
 
 La norme l1 de x est défini tel que :
 
-$$ {\displaystyle \|{\vec {x}}\|_{1}=|x_{1}|+\ldots +|x_{n}|} $$
+$${\|\| \vec {x} \|\| }_{1} =  {\left \| \boldsymbol{x}\right\|}_2^2 $$
+
+$$ { \| {\vec {x}}_{1} \| = \|x_{1}\| + \ldots + \|x_{n} \|} $$
 
 Elle est donnée par la somme des modules (ou valeurs absolues) des coefficients et induit la distance de déplacement à angle droit sur un damier, dite distance de Manhattan
 
