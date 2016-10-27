@@ -1,6 +1,6 @@
 # Multilingual Jekyll
 
-$$a^2 + b^2 = c^2$$
+$$ a^2 + b^2 = c^2 $$
 
 
 This repository aims to show how to get a minimal multilingual *Jekyll* website.

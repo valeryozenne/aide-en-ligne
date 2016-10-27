@@ -21,9 +21,11 @@ Le but de la régularisation est d'imposer une solution unique à un problème m
 
 ### La norme l1
 
+$$ a^2 + b^2 = c^2 $$
+
 La norme l1 de x est défini tel que :
 
-$$ {\displaystyle \|{\vec {x}}\|_{1}=|x_{1}|+\ldots +|x_{n}|}$$
+$$ {\displaystyle \|{\vec {x}}\|_{1}=|x_{1}|+\ldots +|x_{n}|} $$
 
 Elle est donnée par la somme des modules (ou valeurs absolues) des coefficients et induit la distance de déplacement à angle droit sur un damier, dite distance de Manhattan
 
@@ -31,7 +33,7 @@ Elle est donnée par la somme des modules (ou valeurs absolues) des coefficients
 
 La norme l2 est la plus populaire :
 
-$$ {\displaystyle \|{\vec {x}}\|_{2}={\sqrt {|x_{1}|^{2}+\ldots +|x_{n}|^{2}}}}$$
+$$ {\displaystyle \|{\vec {x}}\|_{2}={\sqrt {|x_{1}|^{2}+\ldots +|x_{n}|^{2}}}} $$
 
 Nommée aussi norme euclidienne, elle est obtenue à partir du produit scalaire et correspond à la norme habituellement utilisée pour la distance entre deux points dans le plan ou l'espace usuels.
 
@@ -43,7 +45,7 @@ Un modèle linéaire amène des optimisations quadratiques
 
 Le problème de minimiser la norme l2 peut-être formulé comme:
 
-$$min {\left \| x \right \|}_2$$ tel que $$Ax = b$$
+$$ min {\left \| x \right \|}_2$$ tel que $$Ax = b $$
 
 
 
