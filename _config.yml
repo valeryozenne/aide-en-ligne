@@ -25,4 +25,4 @@ twitter_username: pas de compte twitter
 github_username:  valeryozenne
 
 # Build settings
-markdown: redcarpet
+markdown: kramdown

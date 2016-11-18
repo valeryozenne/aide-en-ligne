@@ -106,28 +106,29 @@ Dans chaque dossier de reconstruction (par ex. `2016-09-09-examen/35/pdata/1`), 
 
 ### 2.1) Création de l'arborescence des données IRM
 
-Les données sont copiées par exemple dans le répertoire `/media/nelsonleouf/sdb1/DICOM/` et sont classées par espèce, puis numérotées arbitrairement pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
+Les données sont copiées par exemple dans le répertoire `/home/pc/Reseau/Imagerie/Auckland/` et sont classées par espèce, puis numérotées avec l'année, le mois et le jour d'acquisition suivi d'un nom libre de choix pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
 
 * `Kadence`
   * `Control`
-    * `Heart_1`     (janvier 2016)
-    * `Heart_2`     (avril 2016)
-    * `Heart_3`     (mai 2016)
+    * `Year_Month_Day_Study`     (janvier 2016)
+    * `2015_11_14_Heart_1`     (janvier 2016)
+    * `2016_05_03_Heart_2`     (avril 2016)    
   * `Infarct`
+
 Dans chaque dossier nous retrouvons les données de diffusion notées et les données de haute résolution si les deux sont présentes.
 
   * `Control`
-    * `Heart_1`  
+    * `2015_11_14_Heart_1`  
       * `30`        (données de diffusion)
       * `4`        (données de haute-résolution)         
-    * `Heart_2`
+    * `2016_05_03_Heart_2`
 
 ### 2.2) Création de l'arborescence des données de post-traitées
 
 Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lancant le script suivant:
 
 {% highlight ruby %}
-cd /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/
+cd /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/
 #génération des sous dossier
 sh createfolder.sh
 {% endhighlight %}
@@ -136,7 +137,7 @@ Si ce fichier n'est pas présent vous pouvez facilement le générer en suivant 
 
 {% highlight ruby %}
 #génération des sous dossier
-cd /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/
+cd /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/
 echo ''  > createfolder.sh
 echo ''  >> createfolder.sh
 #et enfin
@@ -148,7 +149,7 @@ Ainsi nous disposons de l'arborescence suivante:
 
 * `Kadence`
   * `Control`
-    * `Heart_1`  
+    * `2015_11_14_Heart_1`  
       * `30`        (données de diffusion)
       * `4`        (données de haute-résolution)  
       * `STDT`      (dossier de post-traitement)
@@ -194,13 +195,13 @@ En effectant ces commandes vous trouverez la liste des programmes en développem
 
 {% highlight ruby %}
 #localisation des programmes <a id="logiciels"></a>
-cd /home/nelsonleouf/Dev/Vtk
+cd /home/nelsonleouf/Dev/Vtk/BrukerTools/build/
 ls
 {% endhighlight %}
 
 Nous nous interesserons particulièrement à ces derniers:
 
-* `DT_fullC_beta_0.3`: programme de traitement données de diffusion.
+* `DT_fullC_beta_0.x`: programme de traitement données de diffusion.
 * `Alignement`: programme pour orienter nos données.
 * `MakeFigure` : programme facilitant la création de figures avec Paraview.
 
@@ -224,7 +225,7 @@ Se déplacer dans le dossier suivant pour accéder à l'executable `DT_fullC_bet
 
 {% highlight ruby %}
 #déplacement
-cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+cd /home/nelsonleouf/Dev/Vtk/BrukerTools/build/
 {% endhighlight %}
 
 Afin d'extraire les données, plusieurs argument doivent être transmis au programme, ainsi que trois fichiers texte qui contient des paramètres.
@@ -239,14 +240,15 @@ Les arguments sont les suivants:
 Les fichiers texte sont les suivants:
 
 * `info.txt` : renseigne la taille et la résolution des images
-* `threshold.txt` : renseigne les valeurs pouSer segmenter l'échantillon
+* `threshold.txt` : renseigne les valeurs pour segmenter l'échantillon
+* `threshold_3layers.txt` (optionnel) : renseigne les valeurs pour segmenter l'échantillon
 * `axis.txt` : renseigne les coordonnées du "long axis".
 
-Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/`. Vous regarder s'il extsite en tapant la commande
+Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/`. Vous regarder s'il extsite en tapant la commande
 
 {% highlight ruby %}
 #ouverture du fichier info.txt s'il existe
-gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/info.txt &
+gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/info.txt &
 {% endhighlight %}
 
  Nous commencerons par uniquement renseigner le fichier `info.txt` qui à la structure suivante:
@@ -257,20 +259,15 @@ gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/info.txt &
 * champ de vue suivant x
 * champ de vue suivant y
 * champ de vue suivant z
-* seuil FA min  (mettre 0)
-* seuil FA max  (mettre 0)
-* seuil Trace min (mettre 0)
-* seuil Trace max (mettre 0)
-* seuil DWI min (mettre 0)
-* seuil DWI max (mettre 0)
 * drapeau N4 (mettre 0)
+* drapeau Seuillage (mettre 1 ou 3)
+* drapeau Rotation (mettre 0, 1, 2 ou 3)
 
-Pour extaire ces informations, vous pouvez ouvrir le fichier suivant, le fichier `visu_par`. Ils sont spécifiques à la reconstruction.  
+Pour extraire ces informations, vous pouvez ouvrir le fichier `visu_par`.
 
 {% highlight ruby %}
 #ouverture du fichier visu_par et methode de l'acquisition numero 30
-gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/2/visu_pars &
-
+gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/2/visu_pars &
 
 #ligne 20 et 21, vous obtenez la taille de la matrice pour les trois directions:
 $VisuCoreSize=( 3 )
@@ -285,7 +282,7 @@ $VisuCoreExtent=( 3 )
 
 {% highlight ruby %}
 #ouverture du fichier info.txt s'il existe
-gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart1/30/info.txt &
+gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/info.txt &
 {% endhighlight %}
 
 Et enfin nous lançons la commande
@@ -294,7 +291,7 @@ Et enfin nous lançons la commande
 # déplacement si necessaire
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 # extraction des données avec la commande à 4 arguments
-./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 1
+./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 1
 {% endhighlight %}
 
 Plusieurs messages s'affichent, noter l'enregistrement de nombreux fichiers dans votre dossier `STDT/DT/` et en particulier dans le sous dossier `DT_PREPROCESSED_VTI`.
@@ -310,7 +307,7 @@ cd /home/nelsonleouf/Dev/VolView-3.4-Linux-x86_64/bin/
 ./Volview
 {% endhighlight %}
 
-Puis ouvrez le fichier `30_DT_04_diffusion_weighted_image.vti` correspondant à l'image pondérée en diffusion. `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti`.
+Puis ouvrez le fichier `30_DT_04_diffusion_weighted_image.vti` correspondant à l'image pondérée en diffusion. `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti`.
 Puis cliquer sur suivant plusieurs fois.
 
 ![image2](../../../../../images/diffusion/image2.png)
@@ -360,7 +357,7 @@ Cette étape est relativement longue (pour l'ordinateur), pour pouvoir passer ou
 
 {% highlight ruby %}
 #ouverture du fichier info.txt et changement de la treizième ligne
-gedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/info.txt &
+gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/info.txt &
 {% endhighlight %}
 
 
@@ -370,7 +367,7 @@ Nous lançons la commande suivante
 # déplacement si necessaire
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 # lancement de la commande à quatre argument avec le mode n°2
-./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ coeur_2/ 35 2
+./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/data-bruker/Espece_2/ coeur_2/ 35 2
 {% endhighlight %}
 
  Une fois ce calcul effectué, vous pouvez regarder avec le logiciel `Volview` les fichiers résultants et noter les différences en terme d'intensité. Pour cela ouvrez le logiciel `Volview` comme ceci:
@@ -381,8 +378,8 @@ cd
 cd Dev/Volview/bin
 ./Volview
 #en haut à gauche, cliquer sur menu, puis ouvrir et charger les fichiers suivants:
- /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti
- /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_cut_N4.vtk
+ /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti
+ /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_cut_N4.vtk
 {% endhighlight %}
 
 ![image4](../../../../../images/diffusion/image4.png)
@@ -426,6 +423,18 @@ Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshol
 ![image6](../../../../../images/diffusion/image6.png)
 
 ![image7](../../../../../images/diffusion/image7.png)
+
+
+
+
+* seuil FA min  (mettre 0)
+* seuil FA max  (mettre 0)
+* seuil Trace min (mettre 0)
+* seuil Trace max (mettre 0)
+* seuil DWI min (mettre 0)
+* seuil DWI max (mettre 0)
+
+
 
 Maintenant notez les deux valeurs (minimales et maximales, ici 0.14 et 0.83) situées dans la fenêtre `Upper` and `Lower` sur la première ligne du fichier de configuration `threshold.txt` selon cette nomenclature:
 
@@ -489,16 +498,16 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
 Noter la création de plusieurs masques que vous pouvez ouvrir avec Seg3D ou Volview pour vérifier la qualité de la segmentation:
 {% highlight ruby %}
 
-/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_fractional.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_fractional.vtk
 
-/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_trace.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_trace.vtk
 
-/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_dwi.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_dwi.vtk
 
-/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_combine.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_combine.vtk
 
 après utilisation d'un kernel [3,3,3] pour boucher les trous dans le mask
-/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers.vtk
 
 {% endhighlight %}
 
@@ -523,14 +532,14 @@ après utilisation d'un kernel [3,3,3] pour boucher les trous dans le mask
 
 Nous allons maintenant regarder notre segmentation et définir deux points par lesquel passe l'axe principal du coeur, ces points se situent à l'apex et dans la partie basale du coeur. Nous considérons pour cela uniquement le ventricule gauche Nous ajouterons alors les coordonnées correspondantes dans le fichier de configuration `axis.txt`.
 
-Pour cela , nous chargeons dans Seg3D le fichier `/media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers_1px.vtk`.
+Pour cela , nous chargeons dans Seg3D le fichier `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers_1px.vtk`.
 Et nous utilisons le curseur, les coordonnées se mettent à jour directement en bas à droite
 
 ![image11](../../../../../images/diffusion/image11.png)
 
 {% highlight ruby %}
 # create and edit the axis.txt file to save the long axis coordinates
-nedit /media/nelsonleouf/sdb1/DICOM/Kadence/Control/Heart_1/30/axis.txt &
+nedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1/30/axis.txt &
 {% endhighlight %}
 
 Maintenant notez les valeurs de x,y,z du fichier selon cette nomenclature:
@@ -549,7 +558,7 @@ Il existe plusieurs méthodes pour analyser la microstructure cardiaque. Une des
 
 {% highlight ruby %}
 #launch the software with 3 as final argument to calculate the helix angle
-./DT_fullC_beta_0.3 /media/nelsonleouf/sdb1/DICOM/Kadence/Control/ Heart_1/ 30 3
+./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 3
 {% endhighlight %}
 
 

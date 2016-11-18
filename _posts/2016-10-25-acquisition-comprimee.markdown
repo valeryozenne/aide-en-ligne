@@ -21,11 +21,7 @@ Le but de la régularisation est d'imposer une solution unique à un problème m
 
 ### La norme l1
 
-$$a^2 + b^2 = c^2$$
-
 La norme l1 de x est défini tel que :
-
-$${\|\| \vec {x} \|\| }_{1} =  {\left \| \boldsymbol{x}\right\|}_2^2 $$
 
 $$ { \| {\vec {x}}_{1} \| = \|x_{1}\| + \ldots + \|x_{n} \|} $$
 
