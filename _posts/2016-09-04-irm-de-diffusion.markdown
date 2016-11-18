@@ -106,14 +106,26 @@ Dans chaque dossier de reconstruction (par ex. `2016-09-09-examen/35/pdata/1`), 
 
 ### 2.1) Création de l'arborescence des données IRM
 
-Les données sont copiées par exemple dans le répertoire `/home/pc/Reseau/Imagerie/Auckland/` et sont classées par espèce, puis numérotées avec l'année, le mois et le jour d'acquisition suivi d'un nom libre de choix pour chaque échantillon, elles sont généralement classées par ordre d'acquisition.
+Les données sont copiées par exemple dans le répertoire `/home/pc/Reseau/Imagerie/Auckland/` et sont classées par espèce ou par utilisateur puis par ordre d'acquisition. Elles sont donc numérotées avec l'année, le mois et le jour d'acquisition suivi d'un nom libre de choix pour chaque échantillon.
 
 * `Kadence`
   * `Control`
-    * `Year_Month_Day_Study`     (janvier 2016)
-    * `2015_11_14_Heart_1`     (janvier 2016)
-    * `2016_05_03_Heart_2`     (avril 2016)    
+    * `Year_Month_Day_Study`     
+    * `2015_11_14_Heart_1`     
+    * `2016_05_03_Heart_2`        
   * `Infarct`
+* `Species`
+  * `Control`
+    * `Year_Month_Day_Study_1`
+    * `Year_Month_Day_Study_2`
+  * `Infarct`
+    * `Year_Month_Day_Study_1`
+* `User`
+  * `Control`
+    * `Year_Month_Day_Study_1`
+    * `Year_Month_Day_Study_2`
+  * `Infarct`
+    * `Year_Month_Day_Study_1`
 
 Dans chaque dossier nous retrouvons les données de diffusion notées et les données de haute résolution si les deux sont présentes.
 
@@ -125,7 +137,7 @@ Dans chaque dossier nous retrouvons les données de diffusion notées et les don
 
 ### 2.2) Création de l'arborescence des données de post-traitées
 
-Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lancant le script suivant:
+Pour préserver les données acquises de toute mauvaise manipulation, le travail de post-traitement est effectué dans un nouveau dossier nommé `STDT`. Il est généré en lançant le script suivant:
 
 {% highlight ruby %}
 cd /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/
@@ -150,14 +162,21 @@ Ainsi nous disposons de l'arborescence suivante:
 * `Kadence`
   * `Control`
     * `2015_11_14_Heart_1`  
-      * `30`        (données de diffusion)
+      * `30`       (données de diffusion)
       * `4`        (données de haute-résolution)  
       * `STDT`      (dossier de post-traitement)
-        * `ST`      
-        * `DT`
-        * `Stat`      
-&nbsp;
+        * `ST`  (données de haute-résolution)       
+        * `DT`  (données de diffusion)
+          * `DT_PREPROCESSED_VTI` (extraction des données Bruker)
+          * `MASK` (masques binaires après seuillage)
+        * `Stat` (statistique)      
+          * `FILES`
+          * `PNG`
 
+
+
+
+&nbsp;
 
 ### 2.3) Les librairies Visualisation Tool Kit (VTK) et Image Tool Kit (ITK)
 
@@ -221,7 +240,7 @@ NB: Ils sont tous déjà installés sur le pc de post-traitement de l'équipe im
 
 ### 3.2) Extraction des données de diffusion
 
-Se déplacer dans le dossier suivant pour accéder à l'executable `DT_fullC_beta_0.3`  
+Se déplacer dans le dossier suivant pour accéder à l'executable `DT_fullC_beta_0.x`  
 
 {% highlight ruby %}
 #déplacement
@@ -232,19 +251,19 @@ Afin d'extraire les données, plusieurs argument doivent être transmis au progr
 
 Les arguments sont les suivants:
 
-* argument 1 : lien vers votre espace de stockage
-* argument 2 : nom du dossier, par ex. `coeur_2`
-* argument 3 : numero d'acquisition, par ex. `35`
+* argument 1 : lien vers l'espace de stockage  `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/`
+* argument 2 : nom du dossier, par ex. `2015_11_14_Heart_1`
+* argument 3 : numero d'acquisition, par ex. `30`
 * argument 4 : mode `1`,`2`,`3`,`4` ou `0`, nous y reviendrons.
 
 Les fichiers texte sont les suivants:
 
 * `info.txt` : renseigne la taille et la résolution des images
 * `threshold.txt` : renseigne les valeurs pour segmenter l'échantillon
-* `threshold_3layers.txt` (optionnel) : renseigne les valeurs pour segmenter l'échantillon
-* `axis.txt` : renseigne les coordonnées du "long axis".
+* `threshold_3layers.txt` (optionnel) : renseigne les valeurs pour segmenter l'échantillon plus finement
+* `axis.txt` : renseigne les coordonnées de l'axe principal du coeur
 
-Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/`. Vous regarder s'il extsite en tapant la commande
+Ces trois fichiers sont stockées dans la racine de chaque acquisition, par exemple `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/`. Vous regarder s'il existe en tapant la commande
 
 {% highlight ruby %}
 #ouverture du fichier info.txt s'il existe
@@ -263,7 +282,10 @@ gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/in
 * drapeau Seuillage (mettre 1 ou 3)
 * drapeau Rotation (mettre 0, 1, 2 ou 3)
 
-Pour extraire ces informations, vous pouvez ouvrir le fichier `visu_par`.
+Le drapeau seuillage activé à la valeur 3 va découper l'échantillon en 3 zones selon l'axe z afin de segmenter séparemment ces zones. L'étape de seuillage sera alors plus longue. Si vous souhaitez aller plus vite mettre le drapeau Seuillage à 1.
+Le drapeau rotation doit être à 0 sauf mention contraire. Il permet de tourner l'échantillon dans l'espace, ce qui peut parfois être nécessaire si l'échantillon n'a pas été placé idéalement dans l'aimant.
+
+Pour extraire ces informations relatives à la taille de la matrice et au champ de vue, vous pouvez ouvrir le fichier `visu_par`.
 
 {% highlight ruby %}
 #ouverture du fichier visu_par et methode de l'acquisition numero 30
@@ -280,18 +302,21 @@ $VisuCoreExtent=( 3 )
 {% endhighlight %}
 
 
+
 {% highlight ruby %}
 #ouverture du fichier info.txt s'il existe
 gedit /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/30/info.txt &
 {% endhighlight %}
 
+
+
 Et enfin nous lançons la commande
 
 {% highlight ruby %}
 # déplacement si necessaire
-cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+cd /home/pc/Dev/Vtk/BrukerTools/build/
 # extraction des données avec la commande à 4 arguments
-./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 1
+./DT_fullC_beta_0.x /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ 2015_11_14_Heart_1/ 30 1
 {% endhighlight %}
 
 Plusieurs messages s'affichent, noter l'enregistrement de nombreux fichiers dans votre dossier `STDT/DT/` et en particulier dans le sous dossier `DT_PREPROCESSED_VTI`.
@@ -303,11 +328,11 @@ Ouvrez un nouveau terminal et lancer le programme Volview.
 
 {% highlight ruby %}
 # déplacement si necessaire
-cd /home/nelsonleouf/Dev/VolView-3.4-Linux-x86_64/bin/
+cd /home/pc/Dev/VolView-3.4-Linux-x86_64/bin/
 ./Volview
 {% endhighlight %}
 
-Puis ouvrez le fichier `30_DT_04_diffusion_weighted_image.vti` correspondant à l'image pondérée en diffusion. `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti`.
+Puis ouvrez le fichier `30_DT_04_diffusion_weighted_image.vti` correspondant à l'image pondérée en diffusion. `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image.vti`.
 Puis cliquer sur suivant plusieurs fois.
 
 ![image2](../../../../../images/diffusion/image2.png)
@@ -365,9 +390,9 @@ Nous lançons la commande suivante
 
 {% highlight ruby %}
 # déplacement si necessaire
-cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.x/build/
 # lancement de la commande à quatre argument avec le mode n°2
-./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/data-bruker/Espece_2/ coeur_2/ 35 2
+./DT_fullC_beta_0.x /home/pc/Reseau/Imagerie/data-bruker/Espece_2/ coeur_2/ 35 2
 {% endhighlight %}
 
  Une fois ce calcul effectué, vous pouvez regarder avec le logiciel `Volview` les fichiers résultants et noter les différences en terme d'intensité. Pour cela ouvrez le logiciel `Volview` comme ceci:
@@ -387,19 +412,20 @@ cd Dev/Volview/bin
 Vous pouvez maintenant désactiver la correction de biais N4 dans le fichier de configuration `info.txt` en mettant le drapeau à `0`.
 
 
-Discussion scientifique : ceci est coupe short axis.... regarder les différences de contrastes avant et après application du filtre. Modification du contraste global mais pas de moficiation à l'échelle de la structure , vérifier la présence de fibre cardiaque visible à l'oeil nu. Noter par ailleurs la présence de graisse autour du ventricule gauche qu'il faudrait segmenter par la suite. La diffussion pas effective sur le tissu graisseux.
+Discussion scientifique : ceci est coupe short axis.... regarder les différences de contrastes avant et après application du filtre. Modification du contraste global mais pas de mofication à l'échelle de la structure , vérifier la présence de fibre cardiaque visible à l'oeil nu. Noter par ailleurs la présence de graisse autour du ventricule gauche qu'il faudrait segmenter par la suite. La diffusion pas effective sur le tissu graisseux.
 
 
 
 
 ### 3.5) Segmentation <a id="segmentation"></a>
 
+La segmentation peut-être effectuée plus ou moins finement. L'approche suggérée est loin d'être exhaustive mais offre un niveau de précision relativement acceptable pour notre application. Néanmoins de nombreuses altérnatives sont disponibles.
 
-La segmentation peut-être effectuée plus ou moins finement. L'approche suggérée est loin d'être extaustive mais offre un niveau de précision relativement acceptable pour notre application. Néanmoins de nombreuses altérnatives sont disponibles.
+Si le drapeau de seuillage vaut 1, le seuillage est effectué sur tout l'échantillon, s'il vaut 3 l'échantillon est divisé en 3 zones selon l'axe z et le seuillage est effectué séparement sur les 3 zones. Nous allons présenter pas à pas le cas où le drapeau de seuillage vaut 3.
 
- La première étape est un seuillage sur la fraction d'anistropie, la trace et les images pondérée en diffusion. Pour commencer, nous divisons l'échantillon en 3 segments noté apex, mid, et base selon l'axe principal du coeur. Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
+La première étape est un seuillage sur la fraction d'anistropie, la trace et les images pondérée en diffusion. Pour commencer, nous divisons l'échantillon en 3 segments noté apex, mid, et base selon l'axe principal du coeur. Si ce n'est pas le cas veuillez effectuer les rotations nécessaires.
 
-Nous utilisons ensuite le logiciel Seg3D pour déterminer la valeur du seuillage et nous ajoutons alors chaque seuil obtenu dans le fichier de configuration `threshold.txt` selon la procédure suivante. Les valeurs étant sauvegardés dans un fichier texte, il sera alors possible de les modifier pour effectuer des ajustements.
+Nous utilisons ensuite le logiciel Seg3D pour déterminer la valeur du seuillage et nous ajoutons alors chaque seuil obtenu dans le fichier de configuration `threshold.txt` ou `threshold_3layers.txt` selon les cas. Les valeurs étant sauvegardés dans un fichier texte, il sera alors possible de les modifier pour effectuer des ajustements.
 
 {% highlight ruby %}
 #ouvrez un terminal et déplacez vous vers le répértoire du logiciel de segmentation avec la commande suivante: "cd chemin"
@@ -407,40 +433,31 @@ cd Dev/Seg3D2/bin/
 ./Seg3D
 {% endhighlight %}
 
-Click on `Start New Project`, choose `Heart_1_DWI` as project name and your personal directory as project path. Then at the top left-hand corner, click on the `File`, then `Import Layer from Single File` and open the following file:
+Click on `Start New Project`, choose `2015_11_14_Heart_1_DWI` as project name and your personal directory as project path. Then at the top left-hand corner, click on the `File`, then `Import Layer from Single File` and open the following file:
 
 {% highlight ruby %}
 #file to open with Seg3D
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/2015_11_14_Heart_1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
 {% endhighlight %}
 
 ![image5](../../../../../images/diffusion/image5.png)
 
-The window is divided in 4 sub windows, if not click on `View` then `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'eujeux est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option threshold et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
+La fenêtre est divisée en 4 sous fenêtre, si ce n'est pas le cas cliquez sur `View` puis `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'enjeu est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option `Threshold` et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
 
-Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshold`, une fenêtre s'ouvre sur la droite. Cliquer le bandeau `Clear Seeds` puis cliquer sur l'image sur le tissu que vous souhaitez selectionner. Une petite croix apparaît répéter cette opération antant que nécessaire. Vous devez obtenir un résultat similaire aux fenêtres suivantes.
+Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshold`, une fenêtre s'ouvre sur la droite. Cliquer le bandeau `Clear Seeds` puis cliquer sur l'image sur le tissu que vous souhaitez sélectionner. Une petite croix apparaît répéter cette opération autant que nécessaire. Vous devez obtenir un résultat similaire aux fenêtres suivantes.
 
 ![image6](../../../../../images/diffusion/image6.png)
 
 ![image7](../../../../../images/diffusion/image7.png)
 
-
-
-
-* seuil FA min  (mettre 0)
-* seuil FA max  (mettre 0)
-* seuil Trace min (mettre 0)
-* seuil Trace max (mettre 0)
-* seuil DWI min (mettre 0)
-* seuil DWI max (mettre 0)
-
-
-
-Maintenant notez les deux valeurs (minimales et maximales, ici 0.14 et 0.83) situées dans la fenêtre `Upper` and `Lower` sur la première ligne du fichier de configuration `threshold.txt` selon cette nomenclature:
+Maintenant notez les deux valeurs (minimales et maximales, ici 0.14 et 0.83) situées dans la fenêtre `Upper` and `Lower` sur la première ligne du fichier de configuration `threshold_3layers.txt` selon cette nomenclature:
 
 **FA_min_apex** **FA_max_apex** Trace_min_apex Trace_max_apex DWI_min_apex DWI_max_apex
 FA_min_mid  FA_max_mid  Trace_min_mid  Trace_max_mid  DWI_min_mid  DWI_max_mid
 FA_min_base FA_max_base Trace_min_base Trace_max_base DWI_min_base DWI_max_base
+
+Si le seuillage est réalisé sur tout l'échantillon (le drapeau de seuillage vaut 1), la nomenclature  du fichier de configuration `threshold.txt` est la suivante:
+**FA_min_apex** **FA_max_apex** Trace_min Trace_max DWI_min DWI_max
 
 Puis passez à la région mid ventriculaire en ouvrant le fichier:
 
@@ -448,7 +465,7 @@ Puis passez à la région mid ventriculaire en ouvrant le fichier:
 /home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
 {% endhighlight %}
 
-Utilisez l'option threshold et les petites croix pour segmenter la région mid-ventriculaire. N'hésitez pas enlever la graisse.
+Utilisez l'option `Threshold` et les petites croix pour segmenter la région mid-ventriculaire. N'hésitez pas enlever la graisse.
 
 ![image8](../../../../../images/diffusion/image8.png)
 
@@ -488,9 +505,9 @@ Now we are ready to create our mask, relaun the sofware `DT_fullC_beta_3` with t
 
 {% highlight ruby %}
 # if necessary, navigate to the build folder using cd
-cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.3/build/
+cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.x/build/
 # launch the programme with the following arguments
-./DT_fullC_beta_0.3 /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ Heart_1/ 30 2
+./DT_fullC_beta_0.x /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ Heart_1/ 30 2
 {% endhighlight %}
 
 ![image10](../../../../../images/diffusion/image10.png)
@@ -558,7 +575,7 @@ Il existe plusieurs méthodes pour analyser la microstructure cardiaque. Une des
 
 {% highlight ruby %}
 #launch the software with 3 as final argument to calculate the helix angle
-./DT_fullC_beta_0.3 /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 3
+./DT_fullC_beta_0.x /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 3
 {% endhighlight %}
 
 
