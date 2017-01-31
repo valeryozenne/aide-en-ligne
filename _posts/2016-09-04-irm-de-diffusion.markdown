@@ -442,7 +442,7 @@ Click on `Start New Project`, choose `2015_11_14_Heart_1_DWI` as project name an
 
 ![image5](../../../../../images/diffusion/image5.png)
 
-La fenêtre est divisée en 4 sous fenêtre, si ce n'est pas le cas cliquez sur `View` puis `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'enjeu est de seuiller le plus finement possible. Pour cela, cliquer dans le menu outil et sélectionner l'option `Threshold` et ajouter des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
+La fenêtre est divisée en 4 sous-fenêtres, si ce n'est pas le cas cliquez sur `View` puis `Two And Two`. Vous pouvez maintenant observer votre échantillon et faire défiler les coupes, notons que nous nous situons à l'apex. L'enjeu est de seuiller le plus finement possible. Pour cela, cliquez dans le menu outil et sélectionner l'option `Threshold` et ajoutez des petites croix sur la zone que vous souhaitez conserver. Ajouter au tant de petits croix que nécessaire en particulier à l'extrémité de l'apex afin de conserver l'anatomie d'origine. Le contraste étant plus faible à cette extrémité, cette zone est facilement oubliée lors de la segmentation.
 
 Aller maintenant dans la rubrique `Tools`, puis sélectionner l'option `Threshold`, une fenêtre s'ouvre sur la droite. Cliquer le bandeau `Clear Seeds` puis cliquer sur l'image sur le tissu que vous souhaitez sélectionner. Une petite croix apparaît répéter cette opération autant que nécessaire. Vous devez obtenir un résultat similaire aux fenêtres suivantes.
 
@@ -480,34 +480,34 @@ Répèter cette opération pour chaque région et chaque contraste afin de rempl
 
 {% highlight ruby %}
 
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
 
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part1.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part2.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_01_fractional_anisotropy_gaussian_part3.vtk
 
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part1.vtk
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part2.vtk
-/home/nelsonleouf/DICOM/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part3.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part1.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part2.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart1/STDTdata/DT/DT_PREPROCESSED_VTI/30_DT_04_diffusion_weighted_image_part3.vtk
 
 {% endhighlight %}
 
 
 ![image9](../../../../../images/diffusion/image9.png)
 
-Une fois ces étapes effectuées,  les valeurs de segmentation sont sauvegardées, vous obtiendrais un fichier similaire aux lignes ci-dessous. Si la segmentation n'est pas satisfaisante vous pouvez rejouer cette étape autant que nécessaire pour ajuster au mieux les seuillages.
+Une fois ces étapes effectuées, les valeurs de segmentation sont sauvegardées, vous obtiendrais un fichier similaire aux lignes ci-dessous. Si la segmentation n'est pas satisfaisante vous pouvez rejouer cette étape autant que nécessaire pour ajuster au mieux les seuillages.
 
 0.23 0.72 0.53 1.14 228580000 794832000     
 0.19 0.89 0.51 1.10 245244992 778752000     
 0.20 0.88 0.54 1.06 311708000 966128000
 
-Now we are ready to create our mask, relaun the sofware `DT_fullC_beta_3` with the previous command line:
+Maintenant, nous sommes prets pour créer notre masque binaire, relancez le programme `DT_fullC_beta_0.x` avec la commande suivante:
 
 {% highlight ruby %}
 # if necessary, navigate to the build folder using cd
 cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.x/build/
 # launch the programme with the following arguments
-./DT_fullC_beta_0.x /home/nelsonleouf/Reseau/votreprenom/data-bruker/Espece_2/ Heart_1/ 30 2
+./DT_fullC_beta_0.x /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/ Heart_1/ 30 2
 {% endhighlight %}
 
 ![image10](../../../../../images/diffusion/image10.png)
@@ -515,15 +515,15 @@ cd /home/nelsonleouf/Dev/Vtk/DT_fullC_beta_0.x/build/
 Noter la création de plusieurs masques que vous pouvez ouvrir avec Seg3D ou Volview pour vérifier la qualité de la segmentation:
 {% highlight ruby %}
 
-/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_fractional.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/**MASK**/30_DT_mask_3_layers_fractional.vtk
 
-/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_trace.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/**MASK**/30_DT_mask_3_layers_trace.vtk
 
-/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_dwi.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/**MASK**/30_DT_mask_3_layers_dwi.vtk
 
-/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_3_layers_combine.vtk
+/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/**MASK**/30_DT_mask_3_layers_combine.vtk
 
-après utilisation d'un kernel [3,3,3] pour boucher les trous dans le mask
+après utilisation d'un kernel [3,3,3] pour boucher les trous dans le masque binaire
 /home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers.vtk
 
 {% endhighlight %}
@@ -567,6 +567,9 @@ Z_apex
 X_base
 Y_base
 Z_base
+
+Nous pouvons aussi utiliser le programme Paraview, pour cela ouvrer le fichier `/home/pc/Reseau/Imagerie/Auckland/Kadence/Control/Heart_1//STDTdata/DT/MASK/30_DT_mask_threshold_3_layers_1px.vtk` dans Paraview.
+
 
 
 ##### b) Calcul des angles helix, tranverse, beta ...
