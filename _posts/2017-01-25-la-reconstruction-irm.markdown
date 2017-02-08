@@ -17,6 +17,7 @@ Bienvenue sur ce tutorial consacré à la reconstruction des images IRM. Nous al
 
 * [Exemple 3: ](#exemple3)
 
+* [Script complet](#script)
 
 ### Exemple 1: Transformée de Fourier inverse <a id="exemple1"></a>
 
@@ -34,8 +35,7 @@ img_tempo=double(dicomread(filename));
 img=imresize(img_tempo,0.5);
 
 %  Affichage de l image
-figure(1)
-imagesc(img); colormap(gray);title('image');
+ismrm_imshow(img, [], [], {'Image'});
 
 {% endhighlight %}
 
@@ -58,9 +58,7 @@ out = fftshift(ifft(fftshift(K,2),[],2),2);
 end
 
 %  Affichage des deux images
-close(figure(2));
-subplot(121); imagesc(img); colormap(gray); title('image');
-subplot(122); imagesc(abs(kspace), [0 1e5]); title('espace reciproque');
+ismrm_imshow( [img*100 ,abs(kspace)], [0 1e5], [] , {'Image vs Kspace'} );
 
 {% endhighlight %}
 
@@ -90,18 +88,16 @@ kspace_crop_in=kspace-kspace_crop_ext;
 img_crop_ext=ifft_2D(kspace_crop_ext);
 img_crop_in=ifft_2D(kspace_crop_in);
 
-close(figure(3))
-FigHandle = figure(3);
-set(FigHandle, 'Position', [0, 0, 1200, 800]);
-subplot(231); imagesc(abs(kspace), [0 1e5]); colormap(gray); title('a) espace reciproque');  
-subplot(232); imagesc(abs(kspace_crop_ext), [0 1e5]); title('b) espace reciproque');
-subplot(233); imagesc(abs(kspace_crop_in), [0 1e5]); title('c) espace reciproque');
-subplot(234); imagesc(abs(img)); title('d) image');  set(gca,'xtick',[]);
-subplot(235); imagesc(abs(img_crop_ext)); title('e) image');
-subplot(236); imagesc(abs(img_crop_in)); title('f) image');  
+%  Affichage des images
+ismrm_imshow(cat(3,abs(kspace),abs(kspace_crop_ext),abs(kspace_crop_in),abs(img) * 100, abs(img_crop_ext) * 100, abs(img_crop_in) * 100),...
+    [0 1e5],[2 3], {'Kspace Complet', 'Kspace sans le centre', 'Kspace sans exterieur', 'Image', 'Haute Fréquence|', 'Basse Fréquence'});
 
 {% endhighlight %}
 
 ![image3](../../../../../images/reconstruction/image3.png)
 
 ### Exemple 3: <a id="exemple3"></a>
+
+### Script complet: <a id="script"></a>
+
+Le script complet est disponible ici: [lien]()
