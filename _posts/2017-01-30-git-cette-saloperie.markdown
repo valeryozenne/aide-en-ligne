@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Git (cette saloperie)"
+title:  "Git"
 date:   2017-01-30 16:48:29 +0200
 categories: jekyll update
 lang: fr

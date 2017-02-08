@@ -7,6 +7,101 @@ lang: fr
 ---
 > Ceci est une page en construction.
 
-## 1) Introduction
+## 1) Sommaire
 
-Bienvenue sur ce tutorial consacré à la reconstruction des images IRM.
+Bienvenue sur ce tutorial consacré à la reconstruction des images IRM. Nous allons utiliser des images provenant de la banque de données Osirix disponibles à cette adresse: [lien](http://www.osirix-viewer.com/resources/dicom-image-library/)
+
+* [Exemple 1: Transformée de Fourier inverse](#exemple1)
+
+* [Exemple 2: Filtrage des hausses et basses fréquences](#exemple2)
+
+* [Exemple 3: ](#exemple3)
+
+
+### Exemple 1: Transformée de Fourier inverse <a id="exemple1"></a>
+
+{% highlight ruby %}
+clear all
+close all
+
+%  Lecture d un fichier dicom avec la fonction dicomread
+filename='/home/valery/Telechargements/BRAINIX/BRAINIX/IRMcerebrale,neuro-crâne/sT2-TSE-T- 01/IM-0001-0010.dcm';
+
+%  Conversion en double
+img_tempo=double(dicomread(filename));
+
+%  Diminution de la taille de l image
+img=imresize(img_tempo,0.5);
+
+%  Affichage de l image
+figure(1)
+imagesc(img); colormap(gray);title('image');
+
+{% endhighlight %}
+
+![image1](../../../../../images/reconstruction/image1.png){:height="400px" }
+
+Calculons la transformée de Fourier de l'image pour obtenir l'image dans l'espace réciproque (dit kspace pour la suite)
+
+{% highlight ruby %}
+kspace=fft_2D(img);
+
+function [ out ] = ifft_2D( in )
+%  Transformee de fourier inverse suivant deux directions
+
+%  Reconstruction suivant x
+K = fftshift(ifft(fftshift(in,1),[],1),1);
+
+%  Reconstruction suivant y
+out = fftshift(ifft(fftshift(K,2),[],2),2);
+
+end
+
+%  Affichage des deux images
+close(figure(2));
+subplot(121); imagesc(img); colormap(gray); title('image');
+subplot(122); imagesc(abs(kspace), [0 1e5]); title('espace reciproque');
+
+{% endhighlight %}
+
+
+![image2](../../../../../images/reconstruction/image2.png)
+
+
+### Exemple 2: Filtrage des hausses et basses fréquences <a id="exemple2"></a>
+
+
+{% highlight ruby %}
+%  Creation du mask
+mask=ones(size(img));
+
+%  On enleve le centre du mask
+center=round(size(img,1))/2;
+offset=32;
+mask(center-offset:center+offset,center-offset:center+offset)=0;
+
+%  On applique le masque sur le kspace
+
+kspace_crop_ext=kspace .* mask;
+kspace_crop_in=kspace-kspace_crop_ext;
+
+%  On effectue la reconstruction et nous comparons les resultats
+
+img_crop_ext=ifft_2D(kspace_crop_ext);
+img_crop_in=ifft_2D(kspace_crop_in);
+
+close(figure(3))
+FigHandle = figure(3);
+set(FigHandle, 'Position', [0, 0, 1200, 800]);
+subplot(231); imagesc(abs(kspace), [0 1e5]); colormap(gray); title('a) espace reciproque');  
+subplot(232); imagesc(abs(kspace_crop_ext), [0 1e5]); title('b) espace reciproque');
+subplot(233); imagesc(abs(kspace_crop_in), [0 1e5]); title('c) espace reciproque');
+subplot(234); imagesc(abs(img)); title('d) image');  set(gca,'xtick',[]);
+subplot(235); imagesc(abs(img_crop_ext)); title('e) image');
+subplot(236); imagesc(abs(img_crop_in)); title('f) image');  
+
+{% endhighlight %}
+
+![image3](../../../../../images/reconstruction/image3.png)
+
+### Exemple 3: <a id="exemple3"></a>
