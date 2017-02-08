@@ -21,46 +21,46 @@ Bienvenue sur ce tutorial consacré à la reconstruction des images IRM. Nous al
 
 ### Exemple 1: Transformée de Fourier inverse <a id="exemple1"></a>
 
+
+Lecture d'un fichier Dicom avec la fonction `dicomread` puis conversion en format `double`. Diminution de la taille de l'image et affichage.
+
 {% highlight ruby %}
 clear all
 close all
 
-%  Lecture d un fichier dicom avec la fonction dicomread
 filename='/home/valery/Telechargements/BRAINIX/BRAINIX/IRMcerebrale,neuro-crâne/sT2-TSE-T- 01/IM-0001-0010.dcm';
-
-%  Conversion en double
 img_tempo=double(dicomread(filename));
-
-%  Diminution de la taille de l image
 img=imresize(img_tempo,0.5);
 
-%  Affichage de l image
 ismrm_imshow(img, [], [], {'Image'});
 
 {% endhighlight %}
 
 ![image1](../../../../../images/reconstruction/image1.png){:height="400px" }
 
-Calculons la transformée de Fourier de l'image pour obtenir l'image dans l'espace réciproque (dit kspace pour la suite)
+Calculons la transformée de Fourier de l'image pour obtenir l'image dans l'espace réciproque (dit kspace pour la suite). Nous utilisons la fonction `fft_2D` qui effectue la transformée suivant x puis suivant y et affichons cête à cote l'image et le kspace.
+
+
+{% highlight ruby %}
+function [ out ] = fft_2D( in )
+
+K = fftshift(fft(fftshift(in,1),[],1),1); 
+
+out = fftshift(fft(fftshift(K,2),[],2),2);
+
+end
+{% endhighlight %}
+
 
 {% highlight ruby %}
 kspace=fft_2D(img);
-
-function [ out ] = ifft_2D( in )
-%  Transformee de fourier inverse suivant deux directions
-
-%  Reconstruction suivant x
-K = fftshift(ifft(fftshift(in,1),[],1),1);
-
-%  Reconstruction suivant y
-out = fftshift(ifft(fftshift(K,2),[],2),2);
-
-end
-
-%  Affichage des deux images
 ismrm_imshow( [img*100 ,abs(kspace)], [0 1e5], [] , {'Image vs Kspace'} );
 
 {% endhighlight %}
+
+
+
+
 
 
 ![image2](../../../../../images/reconstruction/image2.png)
@@ -68,27 +68,26 @@ ismrm_imshow( [img*100 ,abs(kspace)], [0 1e5], [] , {'Image vs Kspace'} );
 
 ### Exemple 2: Filtrage des hausses et basses fréquences <a id="exemple2"></a>
 
+Creation du mask On enleve le centre du mask
 
 {% highlight ruby %}
-%  Creation du mask
-mask=ones(size(img));
 
-%  On enleve le centre du mask
+mask=ones(size(img));
 center=round(size(img,1))/2;
 offset=32;
 mask(center-offset:center+offset,center-offset:center+offset)=0;
 
-%  On applique le masque sur le kspace
+{% endhighlight %}
 
+On applique le masque sur le kspace. On effectue la reconstruction et nous comparons les resultats Affichage des images
+
+{% highlight ruby %}
 kspace_crop_ext=kspace .* mask;
 kspace_crop_in=kspace-kspace_crop_ext;
-
-%  On effectue la reconstruction et nous comparons les resultats
 
 img_crop_ext=ifft_2D(kspace_crop_ext);
 img_crop_in=ifft_2D(kspace_crop_in);
 
-%  Affichage des images
 ismrm_imshow(cat(3,abs(kspace),abs(kspace_crop_ext),abs(kspace_crop_in),abs(img) * 100, abs(img_crop_ext) * 100, abs(img_crop_in) * 100),...
     [0 1e5],[2 3], {'Kspace Complet', 'Kspace sans le centre', 'Kspace sans exterieur', 'Image', 'Haute Fréquence|', 'Basse Fréquence'});
 
