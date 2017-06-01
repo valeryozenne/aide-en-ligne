@@ -177,3 +177,24 @@ Une fois la pull request accepté nous finissons le travail en mettant à jour n
 $ git fetch FBU
 $ git checkout FBU/integration
 {% endhighlight %}
+
+
+## 6) Gérer les conflits <a id="conflit1"></a>
+
+Après le pull request imposssible de merger , il faut rejouer l'historique de la dernière branche 
+
+{%
+git stash
+git pull --rebase FBU integration
+
+gedit gadgets/noncartesian_liryc/CMakeLists.txt &
+git add gadgets/noncartesian_liryc/CMakeLists.txt
+
+git rebase --continue
+git push VALERY sms_and_dense
+
+%}
+
+{%
+  git push -f VALERY sms_and_dense
+%}

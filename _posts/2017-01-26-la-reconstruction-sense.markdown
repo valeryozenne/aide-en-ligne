@@ -19,41 +19,57 @@ Bienvenue sur ce tutorial consacré à la reconstruction des images IRM. Nous al
 
 ### La reconstruction SENSE en mode rapide <a id="moderapide"></a>
 
+Lecture d'un fichier Dicom avec la fonction `dicomread` puis conversion en format `double`. Diminution de la taille de l'image et affichage.
+
+
 {% highlight ruby %}
 
 close all;
 clear all;
 
-%  Lecture d un fichier dicom avec la fonction dicomread
 filename='/home/valery/Téléchargements/BRAINIX/BRAINIX/IRM cérébrale, neuro-crâne/sT2-TSE-T - 301/IM-0001-0010.dcm'
-
-%  Conversion en double
 im1_tempo=double(dicomread(filename));
-
-%  Diminution de la taille de l image
 img_originale=imresize(im1_tempo,0.5);
 
-%  Image de départ
-figure(1)
-imagesc(img_originale);
+ismrm_imshow(img_originale);
 
-%  Chargement des cartes de sensibilites
+{% endhighlight %}
+
+![image_depart](../../../../../images/sense/image_depart.png){:height="400px" }
+
+
+Chargement des cartes de sensibilités et affichage.
+
+{% highlight ruby %}
+
 addpath('/home/valery/Reseau/Valery/MatlabUnix/ismrm_sunrise_matlab-master/');
 load smaps_phantom.mat
 
-%  Echantillonnage avec 8 antennes et carte de sensiilites
-[data_1, sp_1] = ismrm_sample_data(img_originale, smaps, 1);
+ismrm_imshow(abs(smaps),[min(abs(smaps(:))) max(abs(smaps(:)))],[2 4]);
+ismrm_imshow(angle(smaps),[min(angle(smaps(:))) max(angle(smaps(:)))],[2 4]);
 
-%  Nombres d'antennes
+%  Echantillonnage avec 8 antennes et carte de sensibilites
+[data_1, sp_1] = ismrm_sample_data(img_originale, smaps, 1);
 nCoils=size(data_1,3);
+
+{% endhighlight %}
+
+{% highlight ruby %}
 
 I_raw_1=ifft_2D(data_1);
 
-figure()
-for c=1:1:nCoils
-    subplot(4,4,c);imagesc(abs(I_raw_1(:,:,c))); colormap(gray);
-    subplot(4,4,nCoils+c);imagesc(angle(I_raw_1(:,:,c))); colormap(gray);
-end
+ismrm_imshow(abs(I_raw_1),[0 max(abs(I_raw_1(:)))],[2 4]);
+ismrm_save_image( outputFolder, 'raw_image_abs' );
+
+ismrm_imshow(angle(I_raw_1),[-pi pi],[2 4]);
+ismrm_save_image( outputFolder, 'raw_image_angle' );
+
+{% endhighlight %}
+
+
+
+
+{% highlight ruby %}
 
 readout=size(img_originale,1);
 N=size(img_originale,2);
