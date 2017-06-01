@@ -17,6 +17,8 @@ lang: fr
 
 * [Synchroniser le code avec les changements du NIH](#nih)
 
+* [Gérer les conflits](#conflits)
+
 ## 2) Présentation de l'environnement <a id="presentation"></a>
 
 D'un point de vue architecture nous travaillons à différents niveaux.
@@ -179,11 +181,21 @@ $ git checkout FBU/integration
 {% endhighlight %}
 
 
-## 6) Gérer les conflits <a id="conflit1"></a>
+## 6) Gérer les conflits <a id="conflits"></a>
 
-Après le pull request imposssible de merger , il faut rejouer l'historique de la dernière branche 
+Soit la situation suivante:
 
-{%
+{% highlight ruby %}
+----|---> A ---> x ---> pull request
+    |---> B  
+{% endhighlight %}
+
+La branche A a avancée et a été mergée dans FBU integration.
+La branche B avance mais plus lentement. Lors du pull request de la branche B, il n'est plus possible de merger si B a modifié qcq chose appartenant à A.
+Pour cela, il faut rejouer l'historique de la branche A sur B avant de la merger.
+
+{% highlight ruby %}
+
 git stash
 git pull --rebase FBU integration
 
@@ -193,8 +205,8 @@ git add gadgets/noncartesian_liryc/CMakeLists.txt
 git rebase --continue
 git push VALERY sms_and_dense
 
-%}
+{% endhighlight %}
 
-{%
+{% highlight ruby %}
   git push -f VALERY sms_and_dense
-%}
+{% endhighlight %}
