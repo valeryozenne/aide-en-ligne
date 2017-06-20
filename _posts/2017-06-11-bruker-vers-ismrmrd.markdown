@@ -38,6 +38,16 @@ Le passage en format `ISMRMRD` permet d'utiliser les algorithmes de reconstructi
   * GRAPPA Y, 3 Slices (76x128x3)
   * GRAPPA Y, 1 Slice, 2 répetitions  
   * GRAPPA Y,  3 Slices, 2 répetitions
+  * E72 2D complet (matrix size 128*128)  
+  * E73 2D complet (matrix size 114*114)
+  * E74 2D complet (matrix size 99*100)
+  * E75 2D partial fourier (matrix size 128*128)
+  * E76 2D partial fourier (matrix size 114*114)
+  * E77 2D partial fourier (matrix size 99*100)
+  * 2D grappa accelaration 2 (matrix size 128*128) E78
+  * 2D complet (matrix size 128*128) (5 slices, 4 repetitions, 3 averages ) E80 (interlaced)
+  * 2D complet (matrix size 128*128) (5 slices, 4 repetitions, 3 averages ) E82 (sequential)
+
 * 3D
   * Normal (128x128x128)
   * GRAPPA Y (128x76x128)
@@ -95,6 +105,8 @@ Il est possible d'ouvrir les fichiers de sortie en format `.h5` sous `Matlab` en
 
 ### 1.4) 	Les séquences à gérer <a id="gerer"></a>
 
+* 2D complet (matrix size 99*100) (5 slices, 4 repetitions, 3 averages ) E81
+le probleme semble le readout , il est impair.
 * mp2rage
 * epi
 * ute
