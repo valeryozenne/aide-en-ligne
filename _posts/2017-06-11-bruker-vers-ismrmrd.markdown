@@ -29,15 +29,15 @@ lang: fr
 
 ### 1.1) 	Les séquences qui fonctionnent <a id="fonctionnent"></a>
 
-Le passage en format `ISMRMRD` permet d'utiliser les algorithmes de reconstruction présent dans le `Gadgetron`. La conversion s'effectuera correctement si l'une de ces séquences suivantes est utilisée:
+Le passage en format `ISMRMRD` permet d'utiliser les algorithmes de reconstruction présent dans le `Gadgetron`. La conversion s'effectuera correctement si l'une de ces séquences est utilisée:
 
-* 2D
-  * Normal, 1 Slice  (128x128)
-  * GRAPPA Y, 1 Slice  (76x128)
-  * Normal, 3 slices  (128x128x3)
-  * GRAPPA Y, 3 Slices (76x128x3)
-  * GRAPPA Y, 1 Slice, 2 répetitions  
-  * GRAPPA Y,  3 Slices, 2 répetitions
+* séquence 2D avec échantillonage cartésien
+  * complet, 1 slice  (128x128)
+  * `GRAPPA` Y, 1 slice  (76x128)
+  * complet, 3 slices  (128x128x3)
+  * `GRAPPA` Y, 3 slices (76x128x3)
+  * `GRAPPA` Y, 1 slice, 2 répetitions  
+  * `GRAPPA` Y,  3 slices, 2 répetitions
   * E72 2D complet (matrix size 128*128)  
   * E73 2D complet (matrix size 114*114)
   * E74 2D complet (matrix size 99*100)
@@ -48,22 +48,25 @@ Le passage en format `ISMRMRD` permet d'utiliser les algorithmes de reconstructi
   * 2D complet (matrix size 128*128) (5 slices, 4 repetitions, 3 averages ) E80 (interlaced)
   * 2D complet (matrix size 128*128) (5 slices, 4 repetitions, 3 averages ) E82 (sequential)
 
-* 3D
-  * Normal (128x128x128)
-  * GRAPPA Y (128x76x128)
+&nbsp;
+
+* séquence 3D avec échantillonage cartésien
+  * complet (128x128x128)
+  * `GRAPPA` Y (128x76x128)
+
 
 
 &nbsp;
 
 ### 1.2) Mode d'emploi:	Utiliser le convertisseur <a id="emploi"></a>
 
-Ouvrir le script `generic_create_dataset_from_bruker.m` situé dans le dossier `bruker-to-ismrmrd-matlab/`
+Ouvrir le script `generic_create_dataset_from_bruker.m` situé dans le dossier `Partage/` du calculateur. Le lien complet est le suivant `/home/Partage/Dev/cute/bruker-to-ismrmrd-matlab/`.
 
 {% highlight ruby %}
-matlab cute/bruker-to-ismrmrd-matlab/generic_create_dataset_from_bruker.m &
+matlab generic_create_dataset_from_bruker.m &
 {% endhighlight %}
 
-Modifier le lien vers le répertoire d'acquisition `Bruker` et le nom du fichier qui contiendrait la fid au format `ISMRMRD`.
+Modifier le lien vers le répertoire d'acquisition `Bruker` et le nom du fichier qui contiendra la fid au format `ISMRMRD`.
 
 {% highlight ruby %}
 
@@ -71,7 +74,36 @@ acquisition_path='/home/user/DICOM/protocol_name/4/'
 output_filename = '/home/user/DICOM/testdata.h5';
 {% endhighlight %}
 
-Lancer le script.  
+Lancer le script avec le triangle vert. Si tout va bien, des informations concernant l'acquisition apparaîtront:
+
+{% highlight ruby %}
+--------------------------------------------------------------
+Bruker:FLASH
+--------------------------------------------------------------
+Bruker BioSpin MRI GmbH
+BioSpec 94/30 AV3HD
+9.402146e+00
+IHU LIRYC Bordeaux
+BioSpec 94/30 AV3HD
+--------------------------------------------------------------
+number of slices is 5
+number of repetitions 4
+number of echos 1
+--------------------------------------------------------------
+Number of encoding spaces : 128
+Encoding matrix size : 128 128 1
+Encoding field_of_view : 100 100 1
+Recon matrix size : 128 128 1
+Recon field_of_view : 100 100 1
+--------------------------------------------------------------
+nombre_de_points_par_antennes 327680
+nombre_de_lignes 2560
+La taille de la matrice fid correspond à ACQ_size
+pas acceleration suivant y  facteur 1
+--------------------------------------------------------------
+fin de la conversion
+--------------------------------------------------------------
+{% endhighlight %}
 
 &nbsp;
 
@@ -86,7 +118,7 @@ valeryo@IHUSUX001:/home/Partage/Dev/BruKitchen$ gadgetron
 2017-06-12 14:04:37 INFO [main.cpp:260] Configuring services, Running on port 9002
 {% endhighlight %}
 
-Dans la seconde console, les lignes de commandes suivantes permettent d'effectuer la reconstruction, il est nécessaire de modifier le fichier de configuration suivant le type de séquence.
+Dans la seconde console, les lignes de commandes suivantes permettent d'effectuer la reconstruction, il est nécessaire de modifier le fichier de configuration en fonction de la séquence choisie. Quelques exemples sont indiquées ci-dessous.
 
 {% highlight ruby %}
 
