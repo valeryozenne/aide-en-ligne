@@ -107,7 +107,7 @@ fin de la conversion
 
 &nbsp;
 
-### 1.3) Mode d'emploi: Reconstruire avec Gadgetron <a id="emploi"></a>
+### 1.3) Mode d'emploi: Reconstruire avec Gadgetron <a id="gt"></a>
 
 Ouvrir deux consoles sur le calculateur et lancer le `Gadgetron` dans une des consoles, le message suivant s'affiche
 
