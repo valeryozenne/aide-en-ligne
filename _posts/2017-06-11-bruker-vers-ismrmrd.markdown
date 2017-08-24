@@ -118,6 +118,17 @@ valeryo@IHUSUX001:/home/Partage/Dev/BruKitchen$ gadgetron
 2017-06-12 14:04:37 INFO [main.cpp:260] Configuring services, Running on port 9002
 {% endhighlight %}
 
+si ce message apparait , le gadgetron est déjà actif, cela peut-être un autre utilisateur.
+
+{% highlight ruby %}
+2017-08-24 16:40:29 INFO [main.cpp:200] Starting ReST interface on port 9080
+terminate called after throwing an instance of 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::system::system_error> >'
+  what():  bind: Address already in use
+Aborted
+{% endhighlight %}
+
+
+
 Dans la seconde console, les lignes de commandes suivantes permettent d'effectuer la reconstruction, il est nécessaire de modifier le fichier de configuration en fonction de la séquence choisie. Quelques exemples sont indiquées ci-dessous.
 
 {% highlight ruby %}
@@ -128,10 +139,39 @@ Dans la seconde console, les lignes de commandes suivantes permettent d'effectue
 
 /usr/local/bin/gadgetron_ismrmrd_client -c Generic_Cartesian_Grappa_Phase_Bruker.xml -f /home/user/DICOM/testdata.h5 -o fichier_de_sortie.h5
 
+/usr/local/bin/gadgetron_ismrmrd_client -c Generic_Cartesian_Grappa_Bruker_3D_NoCompression_export.xml -f /home/user/DICOM/testdata.h5 -o fichier_de_sortie.h5
+
 {% endhighlight %}
 
 Attention le `coil compression` est activé par défaut, il est peut-être judicieux de le désactiver.
-Il est possible d'ouvrir les fichiers de sortie en format `.h5` sous `Matlab` en utilisant le script `lecture_image_3D.m`
+
+Pour Julie: j'ai cree un repertoire sur le serveur dans ton home :
+
+{% highlight ruby %}
+
+cd /home/juliem/Dev/Bruker_data
+puis taper
+time ./command_reco
+ou ./command_reco
+
+{% endhighlight %}
+
+qui execute la commande suivante  
+
+{% highlight ruby %}
+
+gadgetron_ismrmrd_client
+ -f /home/juliem/Dicom_Data/testdata.h5 
+ -c Generic_Cartesian_Grappa_Bruker_3D_NoCompression_export.xml
+ -o out.h5
+
+{% endhighlight %}
+
+Il est possible d'ouvrir les fichiers de sortie en format `.h5` sous `Matlab` en utilisant le script `lecture_image_3D.m`  situé dans `cute/`
+il faut aller chercher le fichier à l'endroit ou est lancé le `Gadgetron`.
+
+
+
 
 &nbsp;
 
